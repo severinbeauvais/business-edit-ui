@@ -89,14 +89,16 @@
                 </p>
 
                 <div v-if="!isSummaryView && orgPerson.actions">
-                  <v-chip v-if="wasRemoved(orgPerson)" x-small label color="#grey lighten-2">
+                  <v-chip v-if="wasRemoved(orgPerson)"
+                    x-small label color="grey lighten-2"
+                  >
                     {{ orgPerson.actions[0] }}
                   </v-chip>
-                  <v-chip
-                    v-else
+                  <v-chip v-else
                     v-for="(action, i) in orgPerson.actions"
                     :key="`action-chip-${i}`"
-                    x-small label color="primary" text-color="white">
+                    x-small label color="primary" text-color="white"
+                  >
                     {{ action }}
                   </v-chip>
                 </div>
@@ -200,7 +202,7 @@
                       </v-list-item-subtitle>
                     </v-list-item>
                     <v-list-item
-                      v-if="canRemove(orgPerson)"
+                      v-if="showRemoveBtn(orgPerson)"
                       class="actions-dropdown_item"
                       :id="`officer-${index}-remove-btn`"
                       @click="emitRemove(index); dropdown[index]=false"
@@ -217,7 +219,7 @@
 
             <!-- orgPerson we haven't touched: -->
             <div v-else class="actions mr-4">
-              <span class="edit-action" :class="{'pr-4': canRemove(orgPerson)}">
+              <span class="edit-action" :class="{'pr-4': showRemoveBtn(orgPerson)}">
                 <v-btn
                   text color="primary"
                   :id="`officer-${index}-edit-btn`"
@@ -230,7 +232,7 @@
               </span>
 
               <!-- More Actions Menu (Remove action) -->
-              <span v-if="canRemove(orgPerson)" class="dropdown-action" :class="`more-actions-${index}`">
+              <span v-if="showRemoveBtn(orgPerson)" class="dropdown-action" :class="`more-actions-${index}`">
                 <v-menu
                   offset-y left nudge-bottom="4"
                   v-model="dropdown[index]"
@@ -310,7 +312,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   // Store getter
   @Getter getOrgPeople!: OrgPersonIF[]
   @Getter isBenCorrectionFiling!: boolean
-  @Getter isFirmCorrectionFiling!: boolean
+  @Getter isCorrectionFiling!: boolean
 
   /** V-model for dropdown menus. */
   protected dropdown: Array<boolean> = []
@@ -340,29 +342,6 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
       return this.getOrgPeople.filter(orgPerson => !this.wasRemoved(orgPerson))
     }
     return this.getOrgPeople
-  }
-
-  /** Returns True if the specified org-person can be removed. */
-  protected canRemove (orgPerson: OrgPersonIF): boolean {
-    if (this.isAlterationFiling) {
-      // alterations don't use this component
-      return false
-    }
-    if (this.isFirmChangeFiling) {
-      // can only remove partner
-      return this.hasRolePartner(orgPerson)
-    }
-    if (this.isFirmConversionFiling) {
-      return true
-    }
-    if (this.isBenCorrectionFiling) {
-      return true
-    }
-    if (this.isFirmCorrectionFiling) {
-      // cannot remove proprietor/partner
-      return false
-    }
-    return false // should never happen
   }
 
   /**

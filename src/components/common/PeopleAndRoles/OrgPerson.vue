@@ -275,8 +275,9 @@
               <!-- Delivery address (director/proprietor/partner only) -->
               <article v-if="isDirector || isProprietor || isPartner" class="delivery-address mt-6">
                 <v-checkbox
-                  class="mt-0 pt-0 mb-n2"
+                  class="mt-0 pt-0"
                   label="Delivery Address same as Mailing Address"
+                  hide-details
                   v-model="inheritMailingAddress"
                   :disabled="disableSameDeliveryAddress"
                 />
@@ -302,7 +303,7 @@
               <!-- Action buttons -->
               <div class="action-btns mt-10 mb-6">
                 <v-btn
-                  v-if="showRemoveBtn"
+                  v-if="showRemoveBtn(orgPerson)"
                   id="btn-remove"
                   large outlined color="error"
                   :disabled="isNew"
@@ -377,7 +378,10 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   // Global getter
   @Getter getCurrentDate!: string
   @Getter getResource!: ResourceIF
+  @Getter isAlterationFiling!: boolean
   @Getter isBenCorrectionFiling!: boolean
+  @Getter isFirmChangeFiling!: boolean
+  @Getter isFirmConversionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter isEntityTypeFirm!: boolean
   @Getter isRoleStaff!: boolean
@@ -504,35 +508,12 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     )
   }
 
-  /** Whether to render the Remove button. */
-  get showRemoveBtn (): boolean {
-    if (this.isAlterationFiling) {
-      // alterations don't use this component
-      return false
-    }
-    if (this.isFirmChangeFiling) {
-      // can only remove partner
-      return this.isPartner
-    }
-    if (this.isFirmConversionFiling) {
-      return true
-    }
-    if (this.isBenCorrectionFiling) {
-      return true
-    }
-    if (this.isFirmCorrectionFiling) {
-      // cannot remove proprietor/partner
-      return false
-    }
-    return false // should never happen
-  }
-
   /** Whether the org-person email is optional. */
   get isEmailOptional (): boolean {
     return (this.isFirmChangeFiling || this.isFirmConversionFiling)
   }
 
-  /** Whether to render the add firm org components. */
+  /** Whether to show the add firm org components. */
   get showAddFirmOrgComponents (): boolean {
     if (this.isAlterationFiling) {
       // alterations don't use this component
@@ -1008,29 +989,26 @@ li {
   background-color: rgba(0, 0, 0, 0.06);
 }
 
-// conditionally hide the v-messages (as we normally don't want their height)
-:deep(.v-input--checkbox .v-messages:not(.error--text)) {
-  display: none;
-}
-
-// Overrides for vuetify components (Checkbox alignment, inputField labels/text size/colour)
+// Overrides for Vuetify components
 :deep() {
   #btn-remove.v-btn.v-btn--disabled {
     color: $app-red !important;
     opacity: .4;
   }
-  .v-input--selection-controls .v-input__slot, .v-input--selection-controls .v-radio {
-    align-items: flex-start;
-  }
 
-  .theme--light.v-label {
-    font-size: 1rem;
-    color: $gray7;
+  // un-bold all input labels
+  .v-label.theme--light {
     font-weight: normal;
-    padding-top: 2px; // label align with checkbox
   }
 
-  .theme--light.v-input input, .theme--light.v-input textarea {
+  // set input and textarea text color
+  .v-input.theme--light input,
+  .v-input.theme--light textarea {
+    color: $gray9;
+  }
+
+  // set checkbox label color
+  .v-input--checkbox.theme--light label {
     color: $gray9;
   }
 }

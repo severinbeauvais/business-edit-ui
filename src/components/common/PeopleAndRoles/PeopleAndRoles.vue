@@ -45,7 +45,21 @@
           :helpSection="helpSection"
         />
 
-        <!-- SP add buttons (conversion filing only) -->
+        <!-- "Replace DBA corp" button -->
+        <!-- *** TODO: this is incorrect logic - should not display for partners or for conversion -->
+        <div v-if="showRemoveBtn(null)" class="mt-8">
+          <!-- *** TODO: keep this disabled if org has been changed -->
+          <!-- *** TODO: add v-model prop -->
+          <v-checkbox
+            class="replace-dba-checkbox mt-0 pt-0"
+            label="Replace a DBA corporation that has become historical"
+            hide-details
+            v-model="isAllowReplace"
+            :disabled="isAddingEditingOrgPerson"
+          />
+        </div>
+
+        <!-- SP add buttons (conversion filings only) -->
         <div v-if="isEntityTypeSP && isFirmConversionFiling && !hasMinimumProprietor" class="mt-8">
           <v-btn
             id="sp-btn-add-person"
@@ -82,7 +96,7 @@
           </p>
         </div>
 
-        <!-- GP add buttons (change or conversion filing only)-->
+        <!-- GP add buttons (change or conversion filings only)-->
         <div v-if="isEntityTypeGP && (isFirmChangeFiling || isFirmConversionFiling)" class="mt-8">
           <v-btn
             id="gp-btn-add-person"
@@ -627,6 +641,11 @@ li {
     .v-icon {
       color: $app-blue !important;
     }
+  }
+
+  .replace-dba-checkbox label {
+    font-weight: normal;
+    color: $gray7;
   }
 }
 </style>
