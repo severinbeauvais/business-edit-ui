@@ -12,10 +12,7 @@
 
         <p v-else-if="type === NameRequestStates.CONSUMED">The specified name request has already been consumed.</p>
 
-        <p v-else-if="type === NameRequestStates.NOT_FOUND ||
-                      type === NameRequestStates.INCORRECT_EMAIL ||
-                      type === NameRequestStates.INCORRECT_PHONE"
-        >
+        <p v-else-if="type === NameRequestStates.NOT_FOUND">
           We could not find a match for the information you have entered.
           Please verify the NR Number and the phone number or email address and try again.
         </p>

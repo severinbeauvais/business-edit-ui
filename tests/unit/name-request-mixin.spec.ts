@@ -68,7 +68,7 @@ describe('Name Request Mixin', () => {
       // verify thrown error
       expect((err as any).message).toBe('Incorrect Email')
       // FUTURE: figure out how to verify emitted error (invalid-name-request)
-      // expect(wrapper.emitted('invalid-name-request')).toEqual([['INCORRECT_EMAIL']])
+      // expect(wrapper.emitted('invalid-name-request')).toEqual([['NOT_FOUND']])
     }
   })
 
@@ -85,7 +85,7 @@ describe('Name Request Mixin', () => {
       // verify thrown error
       expect((err as any).message).toBe('Incorrect Phone')
       // FUTURE: figure out how to verify emitted error (invalid-name-request)
-      // expect(wrapper.emitted('invalid-name-request')).toEqual([['INCORRECT_PHONE']])
+      // expect(wrapper.emitted('invalid-name-request')).toEqual([['NOT_FOUND']])
     }
   })
 

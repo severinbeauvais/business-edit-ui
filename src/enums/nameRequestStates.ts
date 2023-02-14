@@ -1,3 +1,4 @@
+// *** TODO: import from shared repo instead
 export enum NameRequestStates {
   // API STATES
   APPROVED = 'APPROVED',
@@ -19,8 +20,4 @@ export enum NameRequestStates {
   NOT_FOUND = 'NOT_FOUND',
   NEED_CONSENT = 'NEED_CONSENT',
   INVALID = 'INVALID',
-
-  // ADDITIONAL UI STATES FOR NR VALIDATION
-  INCORRECT_EMAIL = 'INCORRECT_EMAIL',
-  INCORRECT_PHONE = 'INCORRECT_PHONE',
 }

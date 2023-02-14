@@ -19,6 +19,7 @@ export interface NrCorrectionIF {
   applicant: NameRequestApplicantIF | object
 }
 
+// *** TODO: this should be NameRequestIF (from shared repo)
 export interface NrResponseIF {
   legalType: CorpTypeCd,
   // eslint-disable-next-line camelcase

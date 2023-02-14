@@ -1,6 +1,6 @@
 import { AxiosInstance as axios } from '@/utils/'
 import { AddressesIF, AlterationFilingIF, BusinessInformationIF, ChgRegistrationFilingIF, ConversionFilingIF,
-  CorrectionFilingIF, NameTranslationIF, OrgPersonIF, ResolutionsIF, SpecialResolutionFilingIF }
+  CorrectionFilingIF, NameTranslationIF, NrResponseIF, OrgPersonIF, ResolutionsIF, SpecialResolutionFilingIF }
   from '@/interfaces/'
 import { RoleTypes } from '@/enums'
 
@@ -291,7 +291,7 @@ export default class LegalServices {
    * @param nrNumber the name request number (eg, NR 1234567) to fetch
    * @returns a promise to return the NR data, or null if not found
    */
-  static async fetchNameRequest (nrNumber: string): Promise<any> {
+  static async fetchNameRequest (nrNumber: string): Promise<NrResponseIF> {
     const url = `nameRequests/${nrNumber}`
 
     return axios.get(url)

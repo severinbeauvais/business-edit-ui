@@ -5,6 +5,8 @@ import { NameRequestStates, NameRequestTypes } from '@/enums/'
 import { LegalServices } from '@/services/'
 import { NrResponseIF, ResourceIF } from '@/interfaces/'
 
+// *** TODO: import from shared repo instead
+
 /**
  * Mixin for processing Name Request objects.
  */
@@ -21,20 +23,20 @@ export default class NameRequestMixin extends Vue {
    * @returns the name request response payload
    */
   async validateNameRequest (nrNumber: string, phone?: string, email?: string): Promise<NrResponseIF> {
-    const nrResponse: NrResponseIF = await LegalServices.fetchNameRequest(nrNumber).catch(error => {
+    const nrResponse = await LegalServices.fetchNameRequest(nrNumber).catch(error => {
       this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
       throw new Error(`Fetch Name Request error: ${error}`)
     })
 
     // validate email
     if (email && nrResponse.applicants?.emailAddress !== email) {
-      this.$root.$emit('invalid-name-request', NameRequestStates.INCORRECT_EMAIL)
+      this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
       throw new Error(`Incorrect Email`)
     }
 
     // validate phone
     if (phone && nrResponse.applicants?.phoneNumber !== phone) {
-      this.$root.$emit('invalid-name-request', NameRequestStates.INCORRECT_PHONE)
+      this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
       throw new Error(`Incorrect Phone`)
     }
 
