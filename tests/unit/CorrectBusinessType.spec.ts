@@ -5,7 +5,7 @@ import ChangeBusinessType from '@/components/common/YourCompany/ChangeBusinessTy
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@bcrs-shared-components/enums'
-import { CorpTypeCd as CorpTypeModuleCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { mockFeatureFlagsForAlterationChangeBusinessTypes } from './utils'
 import { vi } from 'vitest'
 
@@ -43,7 +43,7 @@ describe('ChangeBusinessType in an Alteration', () => {
 
   beforeEach(() => {
     // Set Original business Data
-    store.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
+    store.stateModel.nameRequest['legalName'] = entitySnapshot.businessInfo.legalName
     store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
     store.stateModel.entitySnapshot = entitySnapshot
     store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
@@ -107,7 +107,7 @@ describe('ChangeBusinessType in an Alteration', () => {
   })
 
   it('hides the CHANGE option for editing a business type when NOT Limited Company', async () => {
-    store.stateModel.tombstone.entityType = CorpTypeModuleCd.BENEFIT_COMPANY
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
     await Vue.nextTick()
 
     expect(wrapper.find('#btn-correct-business-type').exists()).toBe(false)

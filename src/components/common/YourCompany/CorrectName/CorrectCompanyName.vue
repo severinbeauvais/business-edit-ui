@@ -23,7 +23,7 @@
 import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { CommonMixin } from '@/mixins/'
-import { NameRequestIF } from '@/interfaces/'
+import { NameRequestIF } from '@bcrs-shared-components/interfaces'
 import { CorrectNameOptions } from '@/enums/'
 import { useStore } from '@/store/store'
 
@@ -38,8 +38,8 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
   @Getter(useStore) getNameRequest!: NameRequestIF
 
   // Local properties
-  protected valid = false
-  protected companyName = ''
+  valid = false
+  companyName = ''
 
   // Form Ref
   $refs: { correctNameForm: HTMLFormElement }
@@ -66,7 +66,7 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
       this.setNameRequest({
         ...this.getNameRequest,
         legalName: this.companyName
-      })
+      } as any)
       this.emitIsSaved(true)
     }
   }

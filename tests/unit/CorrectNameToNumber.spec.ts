@@ -5,7 +5,7 @@ import { mount, Wrapper } from '@vue/test-utils'
 import CorrectNameToNumber from '@/components/common/YourCompany/CorrectName/CorrectNameToNumber.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 const vuetify = new Vuetify({})
 
@@ -28,7 +28,7 @@ describe('CorrectNameToNumber', () => {
     store.stateModel.nameRequest = {
       legalName: 'Bobs Plumbing',
       legalType: CorpTypeCd.BENEFIT_COMPANY
-    }
+    } as any
 
     wrapperFactory = (props: any) => {
       return mount(CorrectNameToNumber, {
@@ -57,7 +57,7 @@ describe('CorrectNameToNumber', () => {
     // Verify data from Store
     expect(nameToNumberInput.attributes('aria-checked')).toBe('false')
     expect(wrapper.emitted('isValid')).toBeUndefined()
-    expect(store.stateModel.nameRequest.legalName).toBe('Bobs Plumbing')
+    expect(store.stateModel.nameRequest['legalName']).toBe('Bobs Plumbing')
 
     wrapper.destroy()
   })
@@ -79,7 +79,7 @@ describe('CorrectNameToNumber', () => {
     expect(nameToNumberInput.attributes('aria-checked')).toBe('true')
     expect(getLastEvent(wrapper, 'isValid')).toBe(true)
     expect(store.stateModel.nameRequest.legalType).toBe('BEN')
-    expect(store.stateModel.nameRequest.legalName).toBe('Bobs Plumbing')
+    expect(store.stateModel.nameRequest['legalName']).toBe('Bobs Plumbing')
 
     wrapper.destroy()
   })
@@ -100,7 +100,7 @@ describe('CorrectNameToNumber', () => {
     // Verify local state change and event emission
     expect(nameToNumberInput.attributes('aria-checked')).toBe('true')
     expect(getLastEvent(wrapper, 'isValid')).toBe(true)
-    expect(store.stateModel.nameRequest.legalName).toBe('Bobs Plumbing')
+    expect(store.stateModel.nameRequest['legalName']).toBe('Bobs Plumbing')
 
     // Submit Change
     await wrapper.setProps({ formType: 'correct-name-to-number' })
@@ -110,8 +110,8 @@ describe('CorrectNameToNumber', () => {
 
     // Verify Data change in store
     expect(store.stateModel.nameRequest.legalType).toBe('BEN')
-    expect(store.stateModel.nameRequest.legalName).toBeUndefined()
-    expect(store.stateModel.nameRequest.nrNumber).toBeUndefined()
+    expect(store.stateModel.nameRequest['legalName']).toBeUndefined()
+    expect(store.stateModel.nameRequest.nrNum).toBeUndefined()
 
     wrapper.destroy()
   })

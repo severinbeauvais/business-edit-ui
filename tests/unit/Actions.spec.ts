@@ -8,7 +8,8 @@ import Actions from '@/components/common/Actions.vue'
 import mockRouter from './MockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd, CorrectionErrorTypes, FilingTypes } from '@/enums'
+import { CorrectionErrorTypes, FilingTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
@@ -244,9 +245,9 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
     // init store
     store.stateModel.tombstone.currentDate = '2020/01/29'
     store.stateModel.nameRequest = {
-      entityType: 'BEN',
-      nrNumber: 'NR 1234567',
-      details: { approvedName: 'My Name Request Inc.' }
+      legalType: CorpTypeCd.BENEFIT_COMPANY,
+      nrNum: 'NR 1234567',
+      legalName: 'My Name Request Inc.'
     } as any
     store.stateModel.tombstone = {
       keycloakRoles: [],
@@ -498,9 +499,9 @@ describe.skip('Actions component - Filing Functionality', () => {
     // init store
     store.stateModel.tombstone.currentDate = '2020/01/29'
     store.stateModel.nameRequest = {
-      entityType: CorpTypeCd.BENEFIT_COMPANY,
-      nrNumber: 'NR 1234567',
-      details: { approvedName: 'My Name Request Inc.' }
+      legalType: CorpTypeCd.BENEFIT_COMPANY,
+      nrNum: 'NR 1234567',
+      legalName: 'My Name Request Inc.'
     } as any
     store.stateModel.nameTranslations = []
     store.stateModel.tombstone = {
@@ -533,7 +534,7 @@ describe.skip('Actions component - Filing Functionality', () => {
     wrapper = shallowMount(Actions, { localVue, router, vuetify })
 
     // Mock the function calls that may used by updateFiling below
-    vi.spyOn(wrapper.vm, 'updateFiling').mockImplementation()
+    vi.spyOn(wrapper.vm, 'updateFiling').mockImplementation(() => null)
   })
 
   afterEach(() => {

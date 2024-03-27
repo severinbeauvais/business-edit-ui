@@ -10,7 +10,8 @@ import { AssociationType, BusinessContactInfo, CertifySection, CompletingParty, 
 import CoopCorrection from '@/views/Correction/CoopCorrection.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { AccountTypes, CoopTypes, CorpTypeCd, CorrectionErrorTypes, FilingTypes } from '@/enums'
+import { AccountTypes, CoopTypes, CorrectionErrorTypes, FilingTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { Memorandum, Resolution, Rules } from '@/components/SpecialResolution'
 import { AuthServices, LegalServices } from '@/services'
 import { vi } from 'vitest'
@@ -475,7 +476,7 @@ describe('Coop Correction component', () => {
     expect(store.isCorrectionValid).toBe(false)
     expect(store.hasCorrectionDataChanged).toBe(false)
 
-    store.stateModel.nameRequest.legalName = 'SUPER SUPER COOP 2'
+    store.stateModel.nameRequest['legalName'] = 'SUPER SUPER COOP 2'
     expect(store.hasBusinessNameChanged).toBe(true)
     store.stateModel.businessInformation.associationType = CoopTypes.ORDINARY_COOPERATIVE
     expect(store.hasAssociationTypeChanged).toBe(true)

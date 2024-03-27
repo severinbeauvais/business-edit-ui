@@ -100,8 +100,8 @@ describe('Special Resolution Review', () => {
   })
 
   it('business name', async () => {
-    store.stateModel.nameRequest.legalName = 'Mock name'
-    store.stateModel.nameRequest.nrNumber = 'NR 12345678'
+    store.stateModel.nameRequest['legalName'] = 'Mock name'
+    store.stateModel.nameRequest.nrNum = 'NR 12345678'
     await Vue.nextTick()
     expect(wrapper.find('.company-name').text()).toBe('Mock name')
     expect(wrapper.find('.company-nr').text()).toBe('NR 12345678')

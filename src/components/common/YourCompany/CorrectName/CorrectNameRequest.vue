@@ -101,13 +101,13 @@ import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { CommonMixin, NameRequestMixin } from '@/mixins/'
-import { ConfirmDialogType, NameRequestApplicantIF, NameRequestIF, NrCorrectionIF,
-  NrResponseIF } from '@/interfaces/'
+import { ConfirmDialogType } from '@/interfaces/'
 import { CorrectNameOptions } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
-
+import { NrApplicantIF, NameRequestIF } from '@bcrs-shared-components/interfaces'
 import { useStore } from '@/store/store'
+
 @Component({
   components: {
     ConfirmDialogShared
@@ -196,7 +196,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
     if (this.formType === CorrectNameOptions.CORRECT_NEW_NR) {
       try {
         // Validate and return the name request data
-        const nr: NrResponseIF = await this.validateNameRequest(
+        const nr: NameRequestIF = await this.validateNameRequest(
           this.nameRequestNumber,
           this.applicantPhone,
           this.applicantEmail
@@ -231,7 +231,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
   }
 
   /* Checks name request type or if it's an invalid conversion name request. */
-  isNameRequestInvalid (nr: NrResponseIF): boolean {
+  isNameRequestInvalid (nr: NameRequestIF): boolean {
     const isNameEntityTypeDifferent = this.getEntityType !== nr.legalType
     const entityTypeOptions = this.getResource?.changeData?.entityTypeOptions
     const isValidConversionNameRequest = nr.request_action_cd === NrRequestActionCodes.CONVERSION &&
@@ -240,7 +240,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
   }
 
   /* Generate content of error depending on name request type. */
-  nameRequestErrorText (nr: NrResponseIF): string {
+  nameRequestErrorText (nr: NameRequestIF): string {
     const isConversionOrAlterationNameRequest = nr.request_action_cd === NrRequestActionCodes.CONVERSION
     let dialogContent = ''
     if (isConversionOrAlterationNameRequest) {
@@ -262,24 +262,28 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
    * Parse and Set the Name Request date to Store.
    * @param nr The name request data
    */
-  parseNameRequest (nr: NrResponseIF): void {
-    const nrCorrection: NrCorrectionIF = {
+  parseNameRequest (nr: NameRequestIF): void {
+    const nrCorrection: NameRequestIF = {
       legalType: nr.legalType,
-      nrNumber: this.nameRequestNumber,
-      legalName: this.getNrApprovedName(nr) || '',
-      expiry: nr.expirationDate,
-      status: nr.state,
-      requestType: nr.request_action_cd,
-      applicant: {
+      nrNum: this.nameRequestNumber,
+      // legalName: this.getNrApprovedName(nr) || '',
+      expirationDate: nr.expirationDate,
+      state: nr.state,
+      request_action_cd: nr.request_action_cd,
+      // *** TODO: fix this
+      applicants: {
         fullName: this.formatFullName(nr.applicants),
         fullAddress: this.formatFullAddress(nr.applicants),
         phoneNumber: nr.applicants.phoneNumber,
         emailAddress: nr.applicants.emailAddress
-      } as NameRequestApplicantIF
-    }
+      } as unknown as NrApplicantIF
+    } as any // *** TODO: make this work without casting to any
 
     // set the new correction NR data
-    this.setNameRequest({ ...this.getNameRequest, ...nrCorrection })
+    this.setNameRequest({
+      ...this.getNameRequest, // *** TODO: when did we store the NR? which NR is this?
+      ...nrCorrection
+    } as any)
   }
 
   /** Inform parent the process is complete. */

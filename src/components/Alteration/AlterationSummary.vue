@@ -54,7 +54,7 @@
               {{ companyName }}
             </div>
             <div class="company-name mt-2">
-              {{ getNameRequest.nrNumber }}
+              {{ getNameRequest.nrNum }}
             </div>
           </v-col>
         </v-row>

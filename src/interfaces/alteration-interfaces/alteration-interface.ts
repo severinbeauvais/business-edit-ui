@@ -1,5 +1,4 @@
-import { CourtOrderIF, NameRequestIF, NameTranslationIF, ShareStructureIF }
-  from '@/interfaces/'
+import { CourtOrderIF, NameTranslationIF, ShareStructureIF } from '@/interfaces/'
 import { CoopTypes } from '@/enums'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -26,9 +25,11 @@ export interface AlterationIF extends CoopAlterationIF {
     identifier: string
     legalType: CorpTypeCd
   }
-  /** This is different from bcrs-shared-components/interfaces/name-request-interface.ts
-   * and should be refactored in the future. */
-  nameRequest?: NameRequestIF
+  nameRequest?: {
+    legalType: CorpTypeCd
+    nrNumber?: string // only set when there is an NR
+    legalName?: string // only set when there is an NR
+  }
   nameTranslations?: NameTranslationIF[]
   shareStructure?: ShareStructureIF
   contactPoint: ContactPointIF

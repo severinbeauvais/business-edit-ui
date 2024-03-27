@@ -39,7 +39,7 @@
               {{ companyName }}
             </div>
             <div class="company-name mt-2">
-              {{ getNameRequest.nrNumber }}
+              {{ getNameRequest.nrNum }}
             </div>
           </v-col>
         </v-row>
@@ -115,7 +115,7 @@ import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { OfficeAddresses, ListPeopleAndRoles } from '@/components/common/'
-import { NameRequestIF } from '@/interfaces/'
+import { NameRequestIF } from '@bcrs-shared-components/interfaces'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { useStore } from '@/store/store'
 

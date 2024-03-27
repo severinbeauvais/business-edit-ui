@@ -2,14 +2,15 @@ import { Component } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
-import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CertifyIF, CoopAlterationIF, CorrectionInformationIF,
-  CorrectionFilingIF, CourtOrderIF, EffectiveDateTimeIF, EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF,
-  NameRequestIF, NameTranslationIF, OrgPersonIF, RestorationFilingIF, RestorationStateIF,
-  SpecialResolutionFilingIF, StateFilingRestorationIF, RulesMemorandumIF } from '@/interfaces/'
-import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF,
+import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CertifyIF, CoopAlterationIF,
+  CorrectionInformationIF, CorrectionFilingIF, CourtOrderIF, EffectiveDateTimeIF, EntitySnapshotIF,
+  ChgRegistrationFilingIF, ConversionFilingIF, NameTranslationIF, OrgPersonIF, RestorationFilingIF,
+  RestorationStateIF, SpecialResolutionFilingIF, StateFilingRestorationIF, RulesMemorandumIF }
+  from '@/interfaces/'
+import { CompletingPartyIF, ContactPointIF, NaicsIF, NameRequestIF, ShareClassIF, SpecialResolutionIF,
   StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
-import { ActionTypes, ApprovalTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
-  RelationshipTypes, RestorationTypes, RoleTypes } from '@/enums/'
+import { ActionTypes, ApprovalTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes,
+  PartyTypes, RelationshipTypes, RestorationTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { FilingTypeToName } from '@/utils'
@@ -153,7 +154,11 @@ export default class FilingTemplateMixin extends DateMixin {
         correctedFilingDate: this.correctedFilingDate,
         comment: `${this.defaultCorrectionDetailComment}\n${this.getDetailComment}`,
         contactPoint: this.getContactPoint,
-        nameRequest: this.getNameRequest,
+        nameRequest: {
+          legalType: this.getNameRequest.legalType,
+          nrNumber: this.getNameRequest.nrNum,
+          legalName: this.getNameRequest['legalName']
+        },
         offices: this.getOfficeAddresses,
         parties: null, // applied below
         type: this.getCorrectionErrorType
@@ -294,7 +299,11 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // Apply NR / business name / business type change to filing
     if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
-      filing.alteration.nameRequest = this.getNameRequest
+      filing.alteration.nameRequest = {
+        legalType: this.getNameRequest.legalType,
+        nrNumber: this.getNameRequest.nrNum,
+        legalName: this.getNameRequest['legalName']
+      }
     }
 
     // Apply name translation changes to filing
@@ -395,7 +404,11 @@ export default class FilingTemplateMixin extends DateMixin {
     if (this.isLimitedRestorationToFull) {
       // Apply NR / business name change to filing
       if (this.getNameRequestNumber || this.hasBusinessNameChanged) {
-        filing.restoration.nameRequest = this.getNameRequest
+        filing.restoration.nameRequest = {
+          legalType: this.getNameRequest.legalType,
+          nrNumber: this.getNameRequest.nrNum,
+          legalName: this.getNameRequest['legalName']
+        }
       } else {
         // Otherwise save default data
         filing.restoration.nameRequest = {
@@ -510,8 +523,12 @@ export default class FilingTemplateMixin extends DateMixin {
     // Apply NR / business name / business type change to filing
     if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
       filing.changeOfName = {
-        nameRequest: this.getNameRequest,
-        legalName: this.getNameRequest.legalName
+        nameRequest: {
+          legalType: this.getNameRequest.legalType,
+          nrNumber: this.getNameRequest.nrNum,
+          legalName: this.getNameRequest['legalName']
+        },
+        legalName: this.getNameRequest['legalName']
       }
     }
 
@@ -569,7 +586,11 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // Apply business name change to filing
     if (this.hasBusinessNameChanged) {
-      filing.changeOfRegistration.nameRequest = this.getNameRequest
+      filing.changeOfRegistration.nameRequest = {
+        legalType: this.getNameRequest.legalType,
+        nrNumber: this.getNameRequest.nrNum,
+        legalName: this.getNameRequest['legalName']
+      }
     }
 
     // Apply business address changes to filing
@@ -673,7 +694,11 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // Apply business name change to filing
     if (this.hasBusinessNameChanged) {
-      filing.conversion.nameRequest = this.getNameRequest
+      filing.conversion.nameRequest = {
+        legalType: this.getNameRequest.legalType,
+        nrNumber: this.getNameRequest.nrNum,
+        legalName: this.getNameRequest['legalName']
+      }
     }
 
     // Apply parties to filing
@@ -770,15 +795,20 @@ export default class FilingTemplateMixin extends DateMixin {
       }
     }
 
-    // store Name Request
-    this.setNameRequest(cloneDeep(
-      filing.correction.nameRequest ||
-      {
+    // store Name Request data
+    if (filing.correction.nameRequest) {
+      this.setNameRequest({
+        legalType: filing.correction.nameRequest.legalType,
+        nrNum: filing.correction.nameRequest.nrNumber,
+        legalName: filing.correction.nameRequest.legalName
+      } as any)
+    } else {
+      this.setNameRequest({
         legalType: entitySnapshot.businessInfo.legalType,
-        legalName: entitySnapshot.businessInfo.legalName,
-        nrNumber: entitySnapshot.businessInfo.nrNumber
-      }
-    ))
+        nrNum: entitySnapshot.businessInfo.nrNumber,
+        legalName: entitySnapshot.businessInfo.legalName
+      } as any)
+    }
 
     if (this.isCoopCorrectionFiling) {
       this.storeSpecialResolutionRulesAndMemorandum(filing.correction, entitySnapshot)
@@ -883,14 +913,19 @@ export default class FilingTemplateMixin extends DateMixin {
     })
 
     // store Name Request data
-    this.setNameRequest(cloneDeep(
-      filing.alteration.nameRequest ||
-      {
+    if (filing.alteration.nameRequest) {
+      this.setNameRequest({
+        legalType: filing.alteration.nameRequest.legalType,
+        nrNum: filing.alteration.nameRequest.nrNumber,
+        legalName: filing.alteration.nameRequest.legalName
+      } as any)
+    } else {
+      this.setNameRequest({
         legalType: entitySnapshot.businessInfo.legalType,
-        legalName: entitySnapshot.businessInfo.legalName,
-        nrNumber: entitySnapshot.businessInfo.nrNumber
-      }
-    ))
+        nrNum: entitySnapshot.businessInfo.nrNumber,
+        legalName: entitySnapshot.businessInfo.legalName
+      } as any)
+    }
 
     // store Name Translations
     this.setNameTranslations(cloneDeep(
@@ -990,14 +1025,19 @@ export default class FilingTemplateMixin extends DateMixin {
     }
 
     // store Name Request data
-    this.setNameRequest(cloneDeep(
-      filing.restoration.nameRequest ||
-      {
+    if (filing.restoration.nameRequest) {
+      this.setNameRequest({
+        legalType: filing.restoration.nameRequest.legalType,
+        nrNum: filing.restoration.nameRequest.nrNumber,
+        legalName: filing.restoration.nameRequest.legalName
+      } as any)
+    } else {
+      this.setNameRequest({
         legalType: entitySnapshot.businessInfo.legalType,
-        legalName: entitySnapshot.businessInfo.legalName,
-        nrNumber: entitySnapshot.businessInfo.nrNumber
-      }
-    ))
+        nrNum: entitySnapshot.businessInfo.nrNumber,
+        legalName: entitySnapshot.businessInfo.legalName
+      } as any)
+    }
 
     // store relationships
     if (filing.restoration.relationships?.length > 0) {
@@ -1075,14 +1115,19 @@ export default class FilingTemplateMixin extends DateMixin {
     })
 
     // store Name Request data
-    this.setNameRequest(cloneDeep(
-      filing.changeOfName?.nameRequest ||
-      {
+    if (filing.changeOfName?.nameRequest) {
+      this.setNameRequest({
+        legalType: filing.changeOfName.nameRequest.legalType,
+        nrNum: filing.changeOfName.nameRequest.nrNumber,
+        legalName: filing.changeOfName.nameRequest.legalName
+      } as any)
+    } else {
+      this.setNameRequest({
         legalType: entitySnapshot.businessInfo.legalType,
-        legalName: entitySnapshot.businessInfo.legalName,
-        nrNumber: entitySnapshot.businessInfo.nrNumber
-      }
-    ))
+        nrNum: entitySnapshot.businessInfo.nrNumber,
+        legalName: entitySnapshot.businessInfo.legalName
+      } as any)
+    }
 
     this.storeSpecialResolutionRulesAndMemorandum(filing.alteration, entitySnapshot)
 
@@ -1144,14 +1189,19 @@ export default class FilingTemplateMixin extends DateMixin {
     }
 
     // store Name Request data
-    this.setNameRequest(cloneDeep(
-      filing.changeOfRegistration.nameRequest ||
-      {
+    if (filing.changeOfRegistration.nameRequest) {
+      this.setNameRequest({
+        legalType: filing.changeOfRegistration.nameRequest.legalType,
+        nrNum: filing.changeOfRegistration.nameRequest.nrNumber,
+        legalName: filing.changeOfRegistration.nameRequest.legalName
+      } as any)
+    } else {
+      this.setNameRequest({
         legalType: entitySnapshot.businessInfo.legalType,
-        legalName: entitySnapshot.businessInfo.legalName,
-        nrNumber: entitySnapshot.businessInfo.nrNumber
-      }
-    ))
+        nrNum: entitySnapshot.businessInfo.nrNumber,
+        legalName: entitySnapshot.businessInfo.legalName
+      } as any)
+    }
 
     // store Office Addresses
     let addresses
@@ -1228,14 +1278,19 @@ export default class FilingTemplateMixin extends DateMixin {
     }
 
     // store Name Request data
-    this.setNameRequest(cloneDeep(
-      filing.conversion.nameRequest ||
-      {
+    if (filing.conversion.nameRequest) {
+      this.setNameRequest({
+        legalType: filing.conversion.nameRequest.legalType,
+        nrNum: filing.conversion.nameRequest.nrNumber,
+        legalName: filing.conversion.nameRequest.legalName
+      } as any)
+    } else {
+      this.setNameRequest({
         legalType: entitySnapshot.businessInfo.legalType,
-        legalName: entitySnapshot.businessInfo.legalName,
-        nrNumber: entitySnapshot.businessInfo.nrNumber
-      }
-    ))
+        nrNum: entitySnapshot.businessInfo.nrNumber,
+        legalName: entitySnapshot.businessInfo.legalName
+      } as any)
+    }
 
     // store Office Addresses
     let addresses = null
@@ -1288,8 +1343,8 @@ export default class FilingTemplateMixin extends DateMixin {
     this.setNameRequest({
       legalType: entitySnapshot.businessInfo.legalType,
       legalName: entitySnapshot.businessInfo.legalName,
-      nrNumber: entitySnapshot.businessInfo.nrNumber
-    })
+      nrNum: entitySnapshot.businessInfo.nrNumber
+    } as any)
 
     // store People and Roles
     this.setPeopleAndRoles(cloneDeep(entitySnapshot.orgPersons))

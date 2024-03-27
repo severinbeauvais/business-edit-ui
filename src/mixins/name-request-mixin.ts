@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
-import { NameRequestStates } from '@/enums/'
-import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
+import { NameRequestStates, NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { LegalServices } from '@/services/'
-import { NrResponseIF, ResourceIF } from '@/interfaces/'
+import { ResourceIF } from '@/interfaces/'
+import { NameRequestIF } from '@bcrs-shared-components/interfaces'
 import { useStore } from '@/store/store'
 import { StatusCodes } from 'http-status-codes'
 
@@ -23,43 +23,45 @@ export default class NameRequestMixin extends Vue {
    * @param email the applicant's email address
    * @returns the name request response payload
    */
-  async validateNameRequest (nrNumber: string, phone?: string, email?: string): Promise<NrResponseIF> {
-    const nrResponse: NrResponseIF = await LegalServices.fetchNameRequest(nrNumber, phone, email).catch(error => {
+  async validateNameRequest (nrNumber: string, phone?: string, email?: string): Promise<NameRequestIF> {
+    const nameRequest: NameRequestIF = await LegalServices.fetchNameRequest(nrNumber, phone, email).catch(error => {
       if (error?.response?.status === StatusCodes.NOT_FOUND) {
         this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
         throw new Error(`${nrNumber} not found`) // Sent invalid NR number
-      } else if (error?.response?.status === StatusCodes.BAD_REQUEST) {
-        this.$root.$emit('invalid-name-request', NameRequestStates.INCORRECT_CONTACT)
+      }
+      if (error?.response?.status === StatusCodes.BAD_REQUEST) {
+        this.$root.$emit('invalid-name-request', 'INCORRECT_CONTACT')
         throw new Error('Sent invalid email or phone number.') // Sent invalid email or phone
-      } else if (error?.response?.status === StatusCodes.FORBIDDEN) {
-        this.$root.$emit('invalid-name-request', NameRequestStates.NO_CONTACT)
+      }
+      if (error?.response?.status === StatusCodes.FORBIDDEN) {
+        this.$root.$emit('invalid-name-request', 'NO_CONTACT')
         throw new Error('Not sent email or phone number.') // Not sent the email or phone
       }
       throw new Error(`Fetch Name Request error: ${error}`)
     })
 
     // ensure NR is valid
-    const isNrValid = this.isNrValid(nrResponse)
-    if (!nrResponse || !isNrValid) {
+    const invalid = this.isNrInvalid(nameRequest)
+    if (invalid) {
       this.$root.$emit('invalid-name-request', NameRequestStates.INVALID)
       throw new Error('Invalid Name Request')
     }
 
     // ensure NR is consumable
-    const state = this.getNrState(nrResponse)
+    const state = this.getNrState(nameRequest)
     if (state !== NameRequestStates.APPROVED && state !== NameRequestStates.CONDITIONAL) {
       this.$root.$emit('invalid-name-request', state)
       throw new Error(`Invalid Name request state: ${state}`)
     }
 
-    return nrResponse
+    return nameRequest
   }
 
   /**
    * Returns True if the Name Request data is valid.
    * @param nr the name request response payload
    * */
-  isNrValid (nr: any): boolean {
+  isNrInvalid (nr: any): boolean {
     const requestActionCodeList = this.getResource.changeData?.nameRequestTypes ||
       [NrRequestActionCodes.CHANGE_NAME, NrRequestActionCodes.CONVERSION, NrRequestActionCodes.RESTORE]
     return Boolean(
@@ -75,11 +77,11 @@ export default class NameRequestMixin extends Vue {
 
   /**
    * Returns the Name Request's state.
-   * @param nr the name request response payload
+   * @param nameRequest the name request response payload
    */
-  getNrState (nr: any): NameRequestStates {
+  getNrState (nameRequest: any): NameRequestStates {
     // Ensure a NR payload is provided.
-    if (!nr) {
+    if (!nameRequest) {
       return null
     }
 
@@ -88,20 +90,20 @@ export default class NameRequestMixin extends Vue {
     // R = consent received
     // N = consent waived
     // Y = consent required
-    if (nr.state === NameRequestStates.CONDITIONAL &&
-      nr.consentFlag !== null && nr.consentFlag !== 'R' && nr.consentFlag !== 'N') {
+    if (nameRequest.state === NameRequestStates.CONDITIONAL &&
+      nameRequest.consentFlag !== null && nameRequest.consentFlag !== 'R' && nameRequest.consentFlag !== 'N') {
       return NameRequestStates.NEED_CONSENT
     }
 
     // If the NR's root state is not APPROVED or CONDITIONAL, it is not consumable.
     // EXPIRED or CONSUMED should not return NOT_APPROVED.
     if (![NameRequestStates.APPROVED, NameRequestStates.CONDITIONAL,
-      NameRequestStates.EXPIRED, NameRequestStates.CONSUMED].includes(nr.state)) {
+      NameRequestStates.EXPIRED, NameRequestStates.CONSUMED].includes(nameRequest.state)) {
       return NameRequestStates.NOT_APPROVED
     }
 
     // Otherwise, the NR is consumable.
-    return nr.state // APPROVED or CONDITIONAL or CONSUMED or EXPIRED
+    return nameRequest.state // APPROVED or CONDITIONAL or CONSUMED or EXPIRED
   }
 
   /**

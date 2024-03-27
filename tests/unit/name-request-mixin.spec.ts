@@ -5,7 +5,7 @@ import { AxiosInstance as axios } from '@/utils/'
 import MixinTester from '@/mixin-tester.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { vi } from 'vitest'
 
@@ -149,34 +149,34 @@ describe('Name Request Mixin', () => {
 
   it('identifies valid and invalid NRs', () => {
     let nr = null
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(false)
 
     nr = {}
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(false)
 
     nr.state = 'APPROVED'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(false)
 
     nr.expirationDate = '2021-11-05T07:01:00+00:00'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(false)
 
     nr.names = [{ state: 'APPROVED', name: 'name' }]
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(false)
 
     nr.nrNum = 'NR 1234567'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(false)
 
     nr.requestTypeCd = 'CR'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(false)
 
     nr.request_action_cd = 'NEW'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(false)
 
     nr.request_action_cd = 'CHG'
-    expect(vm.isNrValid(nr)).toBe(true)
+    expect(vm.isNrInvalid(nr)).toBe(true)
 
     nr.request_action_cd = 'CNV'
-    expect(vm.isNrValid(nr)).toBe(true)
+    expect(vm.isNrInvalid(nr)).toBe(true)
   })
 
   it('identifies valid and invalid NRs for firms', async () => {
@@ -184,34 +184,34 @@ describe('Name Request Mixin', () => {
     store.resourceModel.changeData.nameRequestTypes = [NrRequestActionCodes.CHANGE_NAME]
 
     let nr = null
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(false)
 
     nr = {}
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(false)
 
     nr.state = 'APPROVED'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(false)
 
     nr.expirationDate = '2021-11-05T07:01:00+00:00'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(false)
 
     nr.names = [{ state: 'APPROVED', name: 'name' }]
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(false)
 
     nr.nrNum = 'NR 1234567'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(false)
 
     nr.requestTypeCd = 'CR'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(false)
 
     nr.request_action_cd = 'NEW'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(false)
 
     nr.request_action_cd = 'CNV'
-    expect(vm.isNrValid(nr)).toBe(false)
+    expect(vm.isNrInvalid(nr)).toBe(false)
 
     nr.request_action_cd = 'CHG'
-    expect(vm.isNrValid(nr)).toBe(true)
+    expect(vm.isNrInvalid(nr)).toBe(true)
   })
 
   it('identifies NRs that consumable and not consumable', () => {

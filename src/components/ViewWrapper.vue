@@ -38,7 +38,7 @@
                 :filingData="getFilingData"
                 :payApiUrl="payApiUrl"
                 :isLoading="isBusySaving"
-                :hasConflicts="isConflictingLegalType && (getNameRequestNumber || isNameChangedByType)"
+                :hasConflicts="isConflictingLegalType && (getNameRequest.nrNum || isNameChangedByType)"
                 :confirmLabel="feeSummaryConfirmLabel"
                 :errorMessage="feeSummaryError"
                 :isSummaryMode="isSummaryMode"

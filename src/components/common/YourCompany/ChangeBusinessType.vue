@@ -284,7 +284,8 @@ import BcRegEntityDetails from '@/components/Alteration/BcRegEntityDetails.vue'
 import { BcRegContacts } from '@/components/common/'
 import { CommonMixin } from '@/mixins/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
-import { EntitySnapshotIF, EntityTypeOption, NameRequestIF, ResourceIF } from '@/interfaces/'
+import { EntitySnapshotIF, EntityTypeOption, ResourceIF } from '@/interfaces/'
+import { NameRequestIF } from '@bcrs-shared-components/interfaces'
 import { GetFeatureFlag, ResourceUtilities } from '@/utils'
 import { useStore } from '@/store/store'
 
@@ -406,8 +407,8 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     this.setNameRequest({
       legalType: this.getEntitySnapshot?.businessInfo?.legalType,
       legalName: this.getEntitySnapshot?.businessInfo?.legalName,
-      nrNumber: this.getEntitySnapshot?.businessInfo?.nrNumber
-    })
+      nrNum: this.getEntitySnapshot?.businessInfo?.nrNumber
+    } as any)
     this.setNameChangedByType(false)
     this.isEditingType = false
     this.confirmArticles = false
@@ -423,13 +424,11 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
       const updatedName = this.getUpdatedName(originalName)
 
       if (originalName !== updatedName) {
-        const nameRequest = {
+        this.setNameRequest({
           legalType: this.selectedEntityType,
           legalName: updatedName,
-          nrNumber: this.getEntitySnapshot?.businessInfo?.nrNumber
-        }
-
-        this.setNameRequest(nameRequest)
+          nrNum: this.getEntitySnapshot?.businessInfo?.nrNumber
+        } as any)
         this.setNameChangedByType(true)
       }
     }

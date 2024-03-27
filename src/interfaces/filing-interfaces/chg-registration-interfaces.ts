@@ -1,6 +1,6 @@
-import { AddressesIF, CourtOrderIF, BusinessInformationIF, FilingHeaderIF, NameRequestIF, OrgPersonIF }
-  from '@/interfaces/'
+import { AddressesIF, CourtOrderIF, BusinessInformationIF, FilingHeaderIF, OrgPersonIF } from '@/interfaces/'
 import { ContactPointIF, NaicsIF } from '@bcrs-shared-components/interfaces/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 //
 // Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/change_of_registration.json
@@ -12,7 +12,11 @@ export interface ChgRegistrationIF {
   }
   courtOrder?: CourtOrderIF
   contactPoint: ContactPointIF
-  nameRequest?: NameRequestIF
+  nameRequest?: {
+    legalType: CorpTypeCd
+    nrNumber?: string // only set when there is an NR
+    legalName?: string // only set when there is an NR
+  }
   offices?: AddressesIF
   parties: Array<OrgPersonIF>
   startDate?: string // YYYY-MM-DD

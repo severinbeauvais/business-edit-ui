@@ -167,11 +167,11 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
     // Request is invalid, and clicking OK in the pop up redirects to My Business Registry.
     if (this.getNameRequestNumber) {
       try {
-        if (this.getNameRequest.applicant) {
+        if (this.getNameRequest.applicants) {
           await this.validateNameRequest(
-            this.getNameRequestNumber,
-            this.getNameRequest.applicant.phoneNumber,
-            this.getNameRequest.applicant.emailAddress)
+            this.getNameRequestNumber, // *** TODO: replace this with getNameRequest.nrNum?
+            this.getNameRequest.applicants.phoneNumber,
+            this.getNameRequest.applicants.emailAddress)
         } else {
           await this.validateNameRequest(this.getNameRequestNumber)
         }

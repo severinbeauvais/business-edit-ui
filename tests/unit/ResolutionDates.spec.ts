@@ -4,7 +4,8 @@ import { mount } from '@vue/test-utils'
 import ResolutionDates from '@/components/Alteration/Articles/ResolutionDates.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd, FilingTypes } from '@/enums'
+import { FilingTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 const vuetify = new Vuetify({})
 

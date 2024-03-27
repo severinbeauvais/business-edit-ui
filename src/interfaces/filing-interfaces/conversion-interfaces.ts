@@ -1,5 +1,6 @@
-import { AddressesIF, BusinessInformationIF, FilingHeaderIF, NameRequestIF, OrgPersonIF } from '@/interfaces/'
+import { AddressesIF, BusinessInformationIF, FilingHeaderIF, OrgPersonIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 //
 // Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/conversion.json
@@ -10,7 +11,11 @@ interface ConversionIF {
     naics?: NaicsIF
   }
   courtOrder?: string
-  nameRequest?: NameRequestIF
+  nameRequest?: {
+    legalType: CorpTypeCd
+    nrNumber?: string // only set when there is an NR
+    legalName?: string // only set when there is an NR
+  }
   offices: AddressesIF
   parties: Array<OrgPersonIF>
   startDate?: string // YYYY-MM-DD

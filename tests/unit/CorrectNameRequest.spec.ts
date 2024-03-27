@@ -6,7 +6,7 @@ import { mount, Wrapper } from '@vue/test-utils'
 import CorrectNameRequest from '@/components/common/YourCompany/CorrectName/CorrectNameRequest.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { vi } from 'vitest'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
@@ -307,7 +307,6 @@ describe('CorrectNameRequest', () => {
             requestTypeCd: 'BC',
             legalType: 'BC',
             request_action_cd: 'CNV',
-            entity_type_cd: 'CR',
             applicants: {
               phoneNumber: '250 516 8257',
               emailAddress: 'mock@example.com'
@@ -443,7 +442,6 @@ describe('CorrectNameRequest', () => {
             nrNum: 'NR 1234567',
             requestTypeCd: 'BC',
             request_action_cd: 'CNV',
-            entity_type_cd: 'BC',
             applicants: {
               phoneNumber: '250 516 8257',
               emailAddress: 'mock@example.com'
@@ -497,7 +495,6 @@ describe('CorrectNameRequest', () => {
             requestTypeCd: 'GP',
             legalType: 'GP',
             request_action_cd: 'CHG',
-            entity_type_cd: 'GP',
             applicants: {
               phoneNumber: '250 516 8257',
               emailAddress: 'mock@example.com'
@@ -544,7 +541,6 @@ describe('CorrectNameRequest', () => {
             nrNum: 'NR 1234567',
             requestTypeCd: 'SP',
             request_action_cd: 'CHG',
-            entity_type_cd: 'SP',
             applicants: {
               phoneNumber: '250 516 8257',
               emailAddress: 'mock@example.com'

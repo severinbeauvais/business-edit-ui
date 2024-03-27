@@ -21,9 +21,7 @@
 import Vue from 'vue'
 import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-
-// Interfaces && enums
-import { NameRequestIF } from '@/interfaces/'
+import { NameRequestIF } from '@bcrs-shared-components/interfaces'
 import { CorrectNameOptions } from '@/enums/'
 import { useStore } from '@/store/store'
 
@@ -38,7 +36,7 @@ export default class CorrectNameToNumber extends Vue {
   @Getter(useStore) getBusinessId!: string
 
   // Local properties
-  protected correctToNumbered = false
+  correctToNumbered = false
 
   get businessId (): string {
     return this.getBusinessId && this.getBusinessId.substring(2)
@@ -53,8 +51,8 @@ export default class CorrectNameToNumber extends Vue {
       this.setNameRequest({
         ...this.getNameRequest,
         legalName: undefined,
-        nrNumber: undefined
-      })
+        nrNum: undefined
+      } as any)
       this.emitIsSaved(true)
     }
   }

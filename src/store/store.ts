@@ -27,7 +27,6 @@ import {
   FilingDataIF,
   FlagsCompanyInfoIF,
   FlagsReviewCertifyIF,
-  NameRequestIF,
   NameTranslationIF,
   OrgPersonIF,
   ResolutionsIF,
@@ -36,11 +35,13 @@ import {
   ShareClassIF,
   StateIF,
   StateFilingRestorationIF,
-  ValidationFlagsIF } from '@/interfaces/'
+  ValidationFlagsIF
+} from '@/interfaces/'
 import {
   CompletingPartyIF,
   ContactPointIF,
   NaicsIF,
+  NameRequestIF,
   SpecialResolutionIF,
   StaffPaymentIF
 } from '@bcrs-shared-components/interfaces/'
@@ -460,12 +461,12 @@ export const useStore = defineStore('store', {
 
     /** The Name Request Number. */
     getNameRequestNumber (): string {
-      return this.getNameRequest?.nrNumber
+      return this.getNameRequest.nrNum
     },
 
     /** The Name Request Legal Name (approved name). */
     getNameRequestLegalName (): string {
-      return this.getNameRequest?.legalName
+      return (this.getNameRequest as any).approvedName
     },
 
     /** The name translations. */
@@ -833,7 +834,7 @@ export const useStore = defineStore('store', {
 
     /** Check for conflicting legal types between current type and altered type. */
     isConflictingLegalType (): boolean {
-      return (this.getEntityType !== this.stateModel.nameRequest.legalType)
+      return (this.getEntityType !== this.stateModel.nameRequest.legalType as any)
     },
 
     /** The Summary Mode state. */

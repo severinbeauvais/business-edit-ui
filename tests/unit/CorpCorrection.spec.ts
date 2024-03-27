@@ -13,7 +13,8 @@ import CorpCorrection from '@/views/Correction/CorpCorrection.vue'
 import mockRouter from './MockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { AccountTypes, ActionTypes, CorpTypeCd, FilingTypes } from '@/enums'
+import { AccountTypes, ActionTypes, FilingTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})

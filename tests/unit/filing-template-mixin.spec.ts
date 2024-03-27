@@ -2,7 +2,8 @@ import { shallowMount } from '@vue/test-utils'
 import MixinTester from '@/mixin-tester.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd, FilingTypes } from '@/enums'
+import { FilingTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 setActivePinia(createPinia())
 const store = useStore()
@@ -162,7 +163,7 @@ describe('Change of Registration Filing', () => {
         addressCountry: 'CA'
       }
     }
-    store.stateModel.nameRequest.legalName = 'SomeMockBusiness'
+    store.stateModel.nameRequest['legalName'] = 'SomeMockBusiness'
     store.stateModel.entitySnapshot = {
       businessInfo: {
         foundingDate: 'Jan 01, 2000',

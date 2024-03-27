@@ -4,7 +4,8 @@ import { shallowMount } from '@vue/test-utils'
 import Actions from '@/components/common/Actions.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { ActionTypes, CorpTypeCd, CorrectionErrorTypes, FilingTypes } from '@/enums'
+import { ActionTypes, CorrectionErrorTypes, FilingTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { ApprovalTypes, RestorationTypes } from '@bcrs-shared-components/enums'
 
 // Vuetify is needed for Actions component
@@ -263,9 +264,9 @@ describe('Alteration getters', () => {
     expect(vm.hasAlterationDataChanged).toBe(false)
 
     // verify that business name changes are detected
-    store.stateModel.nameRequest.legalName = 'MyLegalName2'
+    store.stateModel.nameRequest['legalName'] = 'MyLegalName2'
     expect(vm.hasBusinessNameChanged).toBe(true)
-    store.stateModel.nameRequest.legalName = 'MyLegalName'
+    store.stateModel.nameRequest['legalName'] = 'MyLegalName'
     expect(vm.hasBusinessNameChanged).toBe(false)
 
     // verify that business type changes are detected
@@ -342,9 +343,9 @@ describe('BEN correction getters', () => {
     expect(vm.hasCorrectionDataChanged).toBe(false)
 
     // verify that business name changes are detected
-    store.stateModel.nameRequest.legalName = 'MyLegalName2'
+    store.stateModel.nameRequest['legalName'] = 'MyLegalName2'
     expect(vm.hasBusinessNameChanged).toBe(true)
-    store.stateModel.nameRequest.legalName = 'MyLegalName'
+    store.stateModel.nameRequest['legalName'] = 'MyLegalName'
     expect(vm.hasBusinessNameChanged).toBe(false)
 
     // verify that business type changes are detected
@@ -466,9 +467,9 @@ describe('SP/GP correction getters', () => {
     expect(vm.hasCorrectionDataChanged).toBe(false)
 
     // verify that business name changes are detected
-    store.stateModel.nameRequest.legalName = 'MyLegalName2'
+    store.stateModel.nameRequest['legalName'] = 'MyLegalName2'
     expect(vm.hasBusinessNameChanged).toBe(true)
-    store.stateModel.nameRequest.legalName = 'MyLegalName'
+    store.stateModel.nameRequest['legalName'] = 'MyLegalName'
     expect(vm.hasBusinessNameChanged).toBe(false)
 
     // verify that business type changes are detected

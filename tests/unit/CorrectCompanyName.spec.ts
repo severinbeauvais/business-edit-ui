@@ -23,7 +23,7 @@ describe('CorrectCompanyName', () => {
   let wrapperFactory: any
 
   beforeEach(() => {
-    store.stateModel.nameRequest.legalName = 'Bobs Plumbing'
+    store.stateModel.nameRequest['legalName'] = 'Bobs Plumbing'
 
     wrapperFactory = (props: any) => {
       return mount(CorrectCompanyName, {
@@ -88,7 +88,7 @@ describe('CorrectCompanyName', () => {
     expect(getLastEvent(wrapper, 'isSaved')).toBe(true)
 
     // Verify Data change in store
-    expect(store.stateModel.nameRequest.legalName).toBe('Bob\'s Plumbing Ltd.')
+    expect(store.stateModel.nameRequest['legalName']).toBe('Bob\'s Plumbing Ltd.')
 
     wrapper.destroy()
   })
